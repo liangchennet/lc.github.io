@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft Yahei", sans-serif;
+        }
+        body {
+            background-color: #0a0a23;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .meteor {
+            position: absolute;
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #fff, transparent);
+            transform-origin: left;
+            animation: meteorMove 3s linear infinite;
+            opacity: 0;
+        }
+        @keyframes meteorMove {
+            0% {
+                left: -200px;
+                transform: rotate(30deg) translateY(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                left: 100%;
+                transform: rotate(30deg) translateY(100px);
+                opacity: 0;
+            }
+        }
+        .card {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            max-width: 400px;
+            width: 100%;
+            margin-bottom: 30px;
+            z-index: 1;
+        }
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .info {
+            flex: 1;
+        }
+        .name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .desc {
+            font-size: 14px;
+            color: #666;
+            opacity: 0.8;
+        }
+        .action-panel {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 1;
+        }
+        .search-group {
+            display: flex;
+            border: 2px solid #333;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            padding: 8px;
+            font-size: 16px;
+        }
+        .search-btn {
+            border: 2px solid #333;
+            background-color: #fff;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .action-btn {
+            flex: 1;
+            min-width: 120px;
+            border: 2px solid #333;
+            background-color: #fff;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: center;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+        }
+        .action-btn:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // 生成流星背景
+        function createMeteors() {
+            const count = 15;
+            for (let i = 0; i < count; i++) {
+                const meteor = document.createElement('div');
+                meteor.className = 'meteor';
+                meteor.style.top = Math.random() * 100 + 'vh';
+                meteor.style.transform = `rotate(${30 + Math.random() * 20}deg)`;
+                meteor.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(meteor);
+            }
+        }
+        createMeteors();
+
+        // 加载一言名言作为搜索框提示词
+        function loadHitokotoAsPlaceholder() {
+            // 调用一言接口，筛选名言类型（哲学k、文学d等）
+            fetch('https://v1.hitokoto.cn?c=k&c=d&c=e')
+                .then(response => {
+                    if (!response.ok) throw new Error('接口请求失败');
+                    return response.json();
+                })
+                .then(data => {
+                    // 设置搜索框提示词
+                    document.querySelector('.search-input').placeholder = data.hitokoto;
+                })
+                .catch(error => {
+                    console.log('名言加载失败：', error);
+                    document.querySelector('.search-input').placeholder = '搜索...';
+                });
+        }
+
+        // 初始加载一次
+        loadHitokotoAsPlaceholder();
+        // 每30秒更新一次提示词
+        setInterval(loadHitokotoAsPlaceholder, 30000);
+    </script>
+
+    <div class="card">
+        <div class="avatar">
+            <img src="http://q1.qlogo.cn/g?b=qq&nk=3696873684&s=100" alt="头像">
+        </div>
+        <div class="info">
+            <div class="name">凉辰</div>
+            <div class="desc">QQ: 3696873684</div>
+        </div>
+    </div>
+
+    <div class="action-panel">
+        <div class="search-group">
+            <input type="text" class="search-input" placeholder="加载中...">
+            <button class="search-btn">搜索</button>
+        </div>
+        <div class="btn-group">
+            <a href="download.html" class="action-btn">下载</a>
+            <a href="about.html" class="action-btn">关于</a>
+            <a href="music/index.html" class="action-btn">音乐</a>
+            <a href="wzzl.html" class="action-btn">王者战力</a>
+        </div>
+    </div>
+</body>
+</html>
